@@ -8,7 +8,7 @@ permissions:
 on:
   workflow_dispatch:
     inputs:
-      addr:
+      version:
         description: tag
         required: true
         type: string
@@ -18,7 +18,6 @@ jobs:
 
   gh_tag:
     runs-on: ubuntu-latest
-    name: Cargo.lock
     steps:
       - uses: actions/checkout@v4
       - 
@@ -26,7 +25,7 @@ jobs:
         name: tag
         shell: bash
         env:
-          tag: ${{ inputs.tag }}
+          tag: ${{ inputs.version }}
 
   build:
     name: build on ${{ matrix.platform || matrix.os }} (${{ matrix.target }} - ${{ matrix.manylinux || 'auto' }})
@@ -117,4 +116,6 @@ jobs:
       - name: Upload wheels
         working-directory: ./bindings/python/dist
         shell: bash
-        run: ls -al
+        run: for bin in $(ls); do gh release upload $bin $tag; done
+        env:
+          tag: ${{ inputs.version }}
