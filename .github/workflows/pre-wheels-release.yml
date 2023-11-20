@@ -1,8 +1,9 @@
 name: Pre Python Release
+
 on:
-  workflow_call:
+  workflow_dispatch:
     inputs:
-      tag:
+        tag:
         default: 'd-0.0.1'
         required: true
         type: string
