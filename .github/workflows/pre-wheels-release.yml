@@ -117,8 +117,7 @@ jobs:
       #   run: |
 
       - uses: actions/upload-artifact@v3
-        working-directory: ./bindings/python/
         with:
           name: pypi_files
-          path: dist
+          path: ./bindings/python/dist
 
