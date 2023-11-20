@@ -1,4 +1,9 @@
 name: Pre Python Release
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+permissions:
+  contents: write
 
 on:
   workflow_dispatch:
@@ -9,14 +14,9 @@ on:
         type: string
         default: "d-0.0.1"
 
-env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  DIST_DIR: ${{ github.sha }}
-
-
 jobs:
 
-  lock_exists:
+  gh_tag:
     runs-on: ubuntu-latest
     name: Cargo.lock
     steps:
@@ -115,6 +115,6 @@ jobs:
         working-directory: ./bindings/python
 
       - name: Upload wheels
-        working-directory: ./bindings/python
+        working-directory: ./bindings/python/dist
         shell: bash
         run: ls -al
