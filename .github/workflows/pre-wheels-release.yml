@@ -7,21 +7,26 @@ on:
         description: tag
         required: true
         type: string
-        default: "0"
-
+        default: "d-0.0.1"
 
 env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   DIST_DIR: ${{ github.sha }}
 
+
 jobs:
+
   lock_exists:
     runs-on: ubuntu-latest
     name: Cargo.lock
     steps:
       - uses: actions/checkout@v4
-      - name: Cargo.lock lock exists 
-        run: cat Cargo.lock
-        working-directory: ./bindings/python
+      - 
+        run: git tag $tag && git push --tags && gh release create $tag --generate-notes
+        name: tag
+        shell: bash
+        env:
+          tag: ${{ inputs.tag }}
 
   build:
     name: build on ${{ matrix.platform || matrix.os }} (${{ matrix.target }} - ${{ matrix.manylinux || 'auto' }})
@@ -56,12 +61,10 @@ jobs:
           - os: ubuntu
             platform: linux
             target: aarch64
-
           - os: ubuntu
             platform: linux
             target: armv7
             interpreter: 3.7 3.8 3.9 3.10 3.11 3.12
-          # musllinux
           - os: ubuntu
             platform: linux
             target: x86_64
@@ -111,13 +114,7 @@ jobs:
       - run: twine check --strict dist/*
         working-directory: ./bindings/python
 
-      # - name: Upload wheels
-      #   working-directory: ./bindings/python
-      #   shell: bash
-      #   run: |
-
-      - uses: actions/upload-artifact@v3
-        with:
-          name: pypi_files
-          path: ./bindings/python/dist
-
+      - name: Upload wheels
+        working-directory: ./bindings/python
+        shell: bash
+        run: ls -al
