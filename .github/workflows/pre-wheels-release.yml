@@ -12,7 +12,7 @@ on:
         description: tag
         required: true
         type: string
-        default: "d-0.0.2"
+        default: "d-0.0.3"
 
 jobs:
 
